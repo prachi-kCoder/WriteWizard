@@ -1,0 +1,72 @@
+.prediction-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers content horizontally */
+  justify-content: center; /* Centers content vertically */
+  margin: 20px auto; /* Centers the container horizontally */
+  padding: 20px;
+  background: linear-gradient(135deg, #ececec, #f0f0f0);
+  transition: background 2s ease-in-out;
+  border-radius: 10px;
+  width: 80%; /* Adjust the width as needed */
+}
+
+.prediction-container:hover {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb); /* Changes to a blueish gradient on hover */
+}
+
+.input-field, .predict-button, .prediction-output {
+  margin-top: 20px;
+  width: 20%; /* Makes sure input fields, button, and output use full width of the container */
+}
+
+.prediction-results{
+  width: 70%;
+
+}
+.selected-prediction-container {
+  margin-top: 20px;
+  text-align: center;
+   /* Center the text */
+}
+
+/* Box around the selected prediction text */
+.selected-prediction-box {
+  font-size: 1.2rem; /* Adjust font size */
+  padding: 15px 18px;
+  border: 2px solid #1976d2; /* Material-UI primary color */
+  border-radius: 8px; /* Smooth corners */
+  background-color: #f0f4ff; /* Light background for contrast */
+  display: inline-block;
+  margin-top: 15px;
+  color: #1976d2;
+  margin-left: 10px; /* Text color matching the primary color */
+}
+
+/* Optional: Add hover effect to the box */
+.selected-prediction-box:hover {
+  background-color: #e8f0fe;
+  border-color: #1565c0; /* Slightly darker primary color on hover */
+}
+
+/* Additional typography styles */
+.prediction-output {
+  font-weight: 500; /* Slightly bolder text for "Selected Prediction" label */
+  color: #333;
+}
+
+.debug-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.debug-section li {
+  font-size: 1rem;
+}
+
+.title {
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  color: #1e88e5; /* Blue color for title */
+  text-align: center; /* Centers the title */
+}

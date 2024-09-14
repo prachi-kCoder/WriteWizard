@@ -1,0 +1,41 @@
+body {
+    font-family: 'Arial', sans-serif;
+    color: #ffffff; /* Default text color for contrast */
+    margin: 0;
+    padding: 0;
+    background: #121212; /* Dark background for a gaming look */
+}  
+h1 {
+    display: flex;
+    justify-content: center; /* Center the heading horizontally */
+    align-items: center; /* Align vertically in case of flex container */
+    font-size: 2.5rem; /* Increase the size to make it stand out */
+    color: #1976d2; /* Material-UI primary color or any color of your choice */
+    padding: 20px 0; /* Padding for spacing around the heading */
+    font-weight: bold; /* Make it bold for prominence */
+    text-transform: uppercase; /* Optional: Make the text all uppercase */
+    letter-spacing: 2px; /* Add space between the letters for a stylish effect */
+    border-bottom: 2px solid #1976d2; /* Optional: Add a border under the heading for separation */
+    margin-bottom: 20px; /* Space between heading and the next element */
+  }
+
+  h1:hover {
+    color: #1565c0; 
+    cursor: pointer;
+  }
+
+  .App-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .App-logo {
+    width: 150px; /* Adjust the width as needed */
+    height: auto;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+  }
+  .App-logo:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+  }

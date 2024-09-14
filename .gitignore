@@ -1,0 +1,31 @@
+# Logs 
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Client-side dependencies (React/Vite)
+client/node_modules/
+client/dist/
+client/.local
+
+# Virtual environments on the server side
+server/scribenv/
+server/venv/
+
+# Python cache for FastAPI server
+server/**/__pycache__/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
