@@ -1,0 +1,132 @@
+# This is how you can train you own Next Word Predictor Model (using LSTM or GRU)
+
+
+import nltk
+nltk.download('gutenberg')
+nltk.download('punkt')
+
+import numpy as np
+from nltk.corpus import gutenberg
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.utils import to_categorical
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
+from tensorflow.keras.callbacks import EarlyStopping
+
+# Load and combine texts
+hamlet_text = gutenberg.raw('shakespeare-hamlet.txt')
+austen_text = gutenberg.raw('austen-emma.txt')
+combined_text = (hamlet_text + " " + austen_text).lower()
+
+# Use a smaller subset of text to manage memory
+subset_text = combined_text[:len(combined_text)//2]
+
+# Tokenization
+tokenizer = Tokenizer(char_level=False)  # Switch to word-level tokenization
+tokenizer.fit_on_texts([subset_text])
+total_words = len(tokenizer.word_index) + 1
+print(f"Total words = {total_words}")
+
+input_sequences = []
+for line in subset_text.splitlines():
+    token_list = tokenizer.texts_to_sequences([line])[0]
+    for i in range(1, len(token_list)):
+        n_gram_sequence = token_list[:i + 1]
+        input_sequences.append(n_gram_sequence)
+
+# Pad sequences
+max_sequence_len = min(max([len(x) for x in input_sequences]), 100)  # Increased max sequence length
+input_sequences = pad_sequences(input_sequences, maxlen=max_sequence_len, padding='pre')
+
+x = input_sequences[:, :-1]
+y = input_sequences[:, -1]
+y = to_categorical(y, num_classes=total_words)
+
+# Split the data
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+# Define the model
+model = Sequential()
+
+# Remove `input_length` and specify `input_shape`
+model.add(Embedding(input_dim=total_words, output_dim=100, input_shape=(x_train.shape[1],)))
+model.add(LSTM(150, return_sequences=True))
+model.add(Dropout(0.3))
+model.add(LSTM(100))
+model.add(Dense(total_words, activation='softmax'))
+
+
+# or (OPTIONAL can also use GRU layers inplace of LSTM)
+
+# Compile the model
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+# Display model summary
+model.summary()
+
+# Define early stopping
+early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+
+# Train the model
+history = model.fit(
+    x_train,
+    y_train,
+    epochs=20,
+    validation_data=(x_test, y_test),
+    verbose=1,
+    callbacks=[early_stopping],
+    batch_size=32
+)
+
+
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
+
+# Define a learning rate schedule
+lr_schedule = ExponentialDecay(
+    initial_learning_rate=0.001,
+    decay_steps=10000,
+    decay_rate=0.9,
+    staircase=True
+)
+
+optimizer = Adam(learning_rate=lr_schedule)
+model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+train_accuracy = history.history['accuracy']
+val_accuracy = history.history['val_accuracy']
+print(f"Final validation accuracy: {val_accuracy[-1]}")
+import matplotlib.pyplot as plt
+
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.show()
+
+# Model Saving
+import json
+import tensorflow as tf
+
+# Save the model
+model.save('/content/next_word_predictor.h5')
+
+# Save the tokenizer
+tokenizer_json = tokenizer.to_json()
+with open('/content/tokenizer.json', 'w') as f:
+    json.dump(tokenizer_json, f)
+
+#(IF using Goole Colab platform for training) 
+from google.colab import files
+
+# Download the model
+files.download('/content/next_word_predictor.h5')
+
+# Download the tokenizer
+files.download('/content/tokenizer.json')
